@@ -1,0 +1,113 @@
+﻿@section Styles {
+    <style>
+        .wrapper {
+            margin-top: 30px;
+            display: grid;
+            grid-template-rows: repeat(11, 1fr);
+            grid-template-columns: repeat(11, 1fr);
+        }
+
+        .field {
+            width: 300px;
+        }
+
+        .wrapper > div {
+            height: 30px;
+            border: 1px solid black;
+            width: 30px;
+            font-size: 16px;
+            background: white;
+            text-align: center;
+        }
+
+        .ship_placement {
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .ship {
+            height: 30px;
+            background: grey;
+            border: 1px solid black;
+            margin-left: 70px;
+            margin-bottom: 20px;
+            margin-top: 20px;
+        }
+    </style>
+}
+
+
+<div class="row">
+    <div class="col-md-6 d-flex flex-column justify-content-center align-items-center">
+        <h3>Ваше поле</h3>
+        <div class="field">
+            <div class="wrapper">
+                @for (int i = 0; i < 11; i++)
+                {
+                    @for (int j = 0; j < 11; j++)
+                    {
+                        if (i == 0)
+                        {
+                            if (j != 0)
+                            {
+                                <div data-toggle="modal" data-target="#purchaseModal" style="border: none;" data-row="@i" data-col="@j">@ViewBag.Characters[j - 1]</div>
+                            }
+                            else
+                            {
+                                <div data-toggle="modal" data-target="#purchaseModal" style="border: none;" data-row="@i" data-col="@j"></div>
+                            }
+                        }
+                        else if (j == 0)
+                        {
+                            if (i != 0)
+                            {
+                                <div data-toggle="modal" data-target="#purchaseModal" style="border: none;" data-row="@i" data-col="@j">@i</div>
+                            }
+                            else
+                            {
+                                <div data-toggle="modal" data-target="#purchaseModal" style="border: none;" data-row="@i" data-col="@j"></div>
+                            }
+                        }
+                        else
+                        {
+                            <div data-toggle="modal" data-target="#purchaseModal" data-row="@i" data-col="@j"></div>
+                        }
+                    }
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 d-flex flex-column justify-content-center" id="ship_placement">
+        <h3>Place your ships</h3>
+        <div class="ship_placement" id="ship_preview">
+            <div class="ship" style="width: 120px;"></div>
+        </div>
+        <form>
+            <div class="form-group row" style="display: none;">
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" placeholder="Start" id="size" value="4">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="staticEmail" class="col-sm-1 col-form-label">Start</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" placeholder="Start" id="start">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="inputPassword" class="col-sm-1 col-form-label">End</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="end" placeholder="End">
+                </div>
+            </div>
+            <button id="palce_button" class="btn btn-primary">Place ship</button>
+        </form>
+    </div>
+</div>
+<div class="row d-flex justify-content-center align-items-center">
+    <button class="btn btn-lg btn-success mt-5" disabled id="start_game">Start game</button>
+</div>
+
+@section Scripts {
+<script type="text/javascript" src="~/js/game.js"></script>
+}

@@ -1,0 +1,48 @@
+﻿@model CourseProject.Web.ViewModels.LoginViewModel;
+@section Styles {
+<style>
+
+    #register-form {
+        width: 500px;
+        height: auto;
+    }
+
+    #register-row {
+        margin-top: 50px;
+    }
+
+    #submit-button {
+        width: 100%;
+    }
+
+    @@media (max-width: 524px) {
+        #register-form {
+            width: auto;
+            height: auto;
+        }
+    }
+</style>
+}
+
+<div class="row d-flex flex-column justify-content-center align-items-center" id="register-row">
+    <h3 class="mb-3">Login</h3>
+    <form asp-controller="Account" asp-action="Login" method="post" id="register-form">
+        <div asp-validation-summary="ModelOnly"></div>
+        <div class="form-group">
+            <input type="text" class="form-control" asp-for="UserName" placeholder="Enter username">
+            <span asp-validation-for="UserName"></span>
+        </div>
+        <div class="form-group">
+            <input type="password" class="form-control" asp-for="Password" placeholder="Password">
+            <span asp-validation-for="Password"></span>
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary" id="submit-button">Login</button>
+        </div>
+    </form>
+
+    <h6 class="mt-5">
+        Do not have an account
+        <a asp-action="Register" asp-controller="Account">Please Register</a> 
+    </h6>
+</div>

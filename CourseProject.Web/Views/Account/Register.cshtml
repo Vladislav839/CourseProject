@@ -1,0 +1,53 @@
+﻿@model CourseProject.Web.ViewModels.RegisterViewModel;
+
+@section Styles {
+<style>
+
+    #register-form {
+        width: 500px;
+        height: auto;
+    }
+
+    #register-row {
+        margin-top: 50px;
+    }
+
+    #submit-button {
+        width: 100%;
+    }
+
+    @@media (max-width: 524px) {
+        #register-form {
+            width: auto;
+            height: auto;
+        }
+    }
+
+</style>
+} 
+
+<div class="row d-flex flex-column justify-content-center align-items-center" id="register-row">
+    <h3 class="mb-3">Register</h3>
+    <form asp-controller="Account" asp-action="Register" method="post" id="register-form">
+        <div asp-validation-summary="ModelOnly"></div>
+        <div class="form-group">
+            <input type="text" class="form-control" asp-for="UserName" placeholder="Enter username">
+            <span asp-validation-for="UserName"></span>
+        </div>
+        <div class="form-group">
+            <input type="email" class="form-control" asp-for="Email" placeholder="Enter email">
+            <span asp-validation-for="Email"></span>
+        </div>
+        <div class="form-group">
+            <input type="password" class="form-control" asp-for="Password" placeholder="Password">
+            <span asp-validation-for="Password"></span>
+        </div>
+        <div class="form-group">
+            <input type="password" class="form-control" asp-for="ConfirmPassword" placeholder="Confirm Password">
+            <span asp-validation-for="ConfirmPassword"></span>
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary" id="submit-button">Register</button>
+        </div>
+    </form>
+</div>
