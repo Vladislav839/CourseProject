@@ -33,13 +33,6 @@ const getUnplacedShip = (ships) => {
     return null;
 }
 
-function getPoint(info) {
-    let point = {}
-    point.row = info.substring(1, 2);
-    point.col = characters.indexOf(info.substring(0, 1)) + 1;
-    return point;
-}
-
 function getNodeByColAndRow(point) {
     let elements = document.querySelectorAll(`div[data-row="${point.row}"]`);
     return [...elements].filter(item => item.getAttribute('data-col') == point.col)[0];
@@ -68,17 +61,20 @@ function drawShiponBoard(startNode, endNode) {
 }
 
 function placeShip(ship) {
-    let start = getPoint(ship.start);
-    let end = getPoint(ship.end);
+    let startElement = getNodeByColAndRow(ship.start);
 
-    let startElement = getNodeByColAndRow(start);
-
-    let endElement = getNodeByColAndRow(end);
+    let endElement = getNodeByColAndRow(ship.end);
 
     drawShiponBoard(startElement, endElement);
 }
 
 function drawNext(c) {
+    if (c == 10) {
+        let elem = document.getElementById('ship_placement');
+        elem.parentNode.removeChild(elem);
+        document.getElementById('start_game').removeAttribute("disabled");
+        return;
+    }
     let size = ships[c].size;
     document.getElementById('size').value = size;
     document.getElementById('ship_preview').innerHTML = '<div class="ship" style="width: ' + size * 30 + 'px;"></div>'
@@ -90,24 +86,29 @@ function drawNext(c) {
 document.getElementById('palce_button').addEventListener('click', function(e) {
     e.preventDefault();
     size = document.getElementById('size').value;
-    start = document.getElementById('start').value;
-    end = document.getElementById('end').value;
+    start_row = document.getElementById('start-row').value;
+    start_col = characters.indexOf(document.getElementById('start-col').value) + 1;
+
+    end_row = document.getElementById('end-row').value;
+    end_col = characters.indexOf(document.getElementById('end-col').value) + 1;
 
     let ship = getUnplacedShip(ships);
     if (ship == null) {
-        document.getElementById('ship_placement').style.display = 'none';
-        document.getElementById('start_game').setAttribute('disabled') = false;
+        let elem = document.getElementById('ship_placement');
+        elem.parentNode.removeChild(elem);
+        document.getElementById('start_game').removeAttribute("disabled");
         return;
     }
-    ship.start = start;
-    ship.end = end;
+    ship.start = { row: start_row, col: start_col };
+    ship.end = { row: end_row, col: end_col };
     ship.size = size;
     ship.isPalced = true;
 
-    placeShip(ship);
-
-    document.getElementById('start').value = '';
-    document.getElementById('end').value = '';
+    if (ship.size == 1) {
+        getNodeByColAndRow(ship.start).style.background = 'grey';
+    } else {
+        placeShip(ship);
+    }
 
     drawNext(++count);
 })
