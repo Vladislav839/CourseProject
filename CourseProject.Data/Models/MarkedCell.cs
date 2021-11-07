@@ -18,8 +18,10 @@ namespace CourseProject.Data.Models
 
     public enum CellType
     {
+        EMPTY,
         SHIP,
-        SHOT
+        MISS,
+        HIT
     }
 
     public enum CellOwner

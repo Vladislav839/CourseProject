@@ -7,7 +7,9 @@ namespace CourseProject.Data.Models
     public class Game
     {
         public int Id { get; set; }
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public User User { get; set; }
+
+        List<MarkedCell> cells = new List<MarkedCell>();
     }
 }

@@ -40,6 +40,7 @@ namespace CourseProject.Web
             .AddEntityFrameworkStores<ApplicationContext>();
 
             services.AddTransient<IUsersService, UsersService>();
+            services.AddScoped<IGameService, GameService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

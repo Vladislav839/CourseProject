@@ -7,6 +7,12 @@
     }
 }
 
+let field = new Array(10);
+
+for (let j = 0; j < 10; j++) {
+    field[j] = new Array(10).fill(0);
+}
+
 const characters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
 
 let ships = []
@@ -83,14 +89,74 @@ function drawNext(c) {
     }
 }
 
+function checkRules(startRow, startCol, dir, size) {
+    let fromX, toX, fromY, toY
+
+    fromX = (startRow == 0) ? startRow : startRow - 1;
+
+    if (startRow + size == 10 && dir == 1) toX = startRow + size;
+    else if (startRow + size < 10 && dir == 1) toX = startRow + size + 1;
+    else if (startRow == 9 && dir == 0) toX = startRow + 1;
+    else if (startRow < 9 && dir == 0) toX = startRow + 2;
+
+    fromY = (startCol == 0) ? startCol : startCol - 1;
+    if (startCol + size == 10 && dir == 1) toY = startCol + size;
+    else if (startCol + size < 10 && dir == 1) toY = startCol + size + 1;
+    else if (startCol == 9 && dir == 0) toY = startCol + 1;
+    else if (startCol < 9 && dir == 0) toY = startCol + 2;
+
+    if (toX == undefined || toY == undefined) return false;
+
+    for (let i = fromX; i < toX; i++)
+    {
+        for (let j = fromY; j < toY; j++)
+        {
+            if (field[i][j] == 1) return false;
+        }
+    }
+
+    return true;
+
+
+}
+
 document.getElementById('palce_button').addEventListener('click', function(e) {
     e.preventDefault();
     size = document.getElementById('size').value;
-    start_row = document.getElementById('start-row').value;
+    start_row = Number(document.getElementById('start-row').value);
     start_col = characters.indexOf(document.getElementById('start-col').value) + 1;
 
-    end_row = document.getElementById('end-row').value;
+    end_row = Number(document.getElementById('end-row').value);
     end_col = characters.indexOf(document.getElementById('end-col').value) + 1;
+
+    if (start_row == end_row) {
+        if (Math.abs(Number(start_col) - Number(end_col)) + 1 != Number(size)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Неверные координаты',
+            })
+            return
+        }
+    }
+    else if (start_col == end_col) {
+        if (Math.abs(Number(start_row) - Number(end_row)) + 1 != Number(size)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Неверные координаты',
+            })
+            return
+        }
+    }
+    else {
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Неверные координаты',
+        })
+        return
+    }
 
     let ship = getUnplacedShip(ships);
     if (ship == null) {
@@ -99,6 +165,33 @@ document.getElementById('palce_button').addEventListener('click', function(e) {
         document.getElementById('start_game').removeAttribute("disabled");
         return;
     }
+
+    let dir
+
+    if (Number(start_row) == Number(end_row)) dir = 0
+    if (Number(start_col) == Number(end_col)) dir = 1
+
+    let res = checkRules(Number(start_row) - 1, Number(start_col) - 1, dir, Number(size))
+
+    if (!res) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Там уже есть корабль',
+        })
+        return;
+    }
+
+    if (dir == 0) {
+        for (let i = Number(start_col) - 1; i < Number(start_col) - 1 + Number(size); i++) {
+            field[Number(start_row) - 1][i] = 1;
+        }
+    } else {
+        for (let i = Number(start_row) - 1; i < Number(start_row) - 1 + Number(size); i++) {
+            field[i][Number(start_col) - 1] = 1;
+        }
+    }
+
     ship.start = { row: start_row, col: start_col };
     ship.end = { row: end_row, col: end_col };
     ship.size = size;
@@ -113,5 +206,36 @@ document.getElementById('palce_button').addEventListener('click', function(e) {
     drawNext(++count);
 })
 
+document.getElementById('start_game').addEventListener('click', function (e) {
+
+    let nodes = document.querySelector('.wrapper').children;
+    for (let i = 0; i < nodes.length; i++) {
+        if (nodes[i].getAttribute('data-col') == "0" || nodes[i].getAttribute('data-row') == "0") {
+            continue;
+        }
+
+        if (nodes[i].style.background == 'grey') {
+            field[Number(nodes[i].getAttribute('data-row')) - 1][Number(nodes[i].getAttribute('data-col')) - 1] = 1;
+        } else {
+            field[Number(nodes[i].getAttribute('data-row')) - 1][Number(nodes[i].getAttribute('data-col')) - 1] = 0;
+        }
+    }
+
+    $.ajax({
+        url: '/Game/InititalizeGame',
+        data: JSON.stringify(field),
+        type: "POST",
+        traditional: true,
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (result) {
+
+        },
+        error: function (data, textStatus) { }
+    }).done(function (id) {
+        window.location.href = "Game/GameSession/" + id;
+        });
+
+})
 
 
