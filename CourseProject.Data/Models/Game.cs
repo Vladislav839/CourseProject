@@ -9,6 +9,8 @@ namespace CourseProject.Data.Models
         public int Id { get; set; }
         public string UserId { get; set; }
         public User User { get; set; }
+        public int ComputerHits { get; set; }
+        public int UserHits { get; set; }
 
         List<MarkedCell> cells = new List<MarkedCell>();
     }

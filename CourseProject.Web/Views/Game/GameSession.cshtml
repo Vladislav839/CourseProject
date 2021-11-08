@@ -35,6 +35,18 @@
             margin-bottom: 20px;
             margin-top: 20px;
         }
+
+        .cell {
+            width: 30px;
+            height: 30px;
+            background: #fff;
+            border-style: none;
+            border: 1px solid black;
+        }
+
+            .cell:hover {
+                background: #c0cfcd;
+            }
     </style>
 }
 
@@ -73,11 +85,11 @@
                         {
                             if (Model.UserField[i - 1][j - 1] == 1)
                             {
-                                <div data-toggle="modal" data-target="#purchaseModal" style="background: grey;" data-disabled="false" data-row="@i" data-col="@j"></div>
+                                <div data-toggle="modal" data-target="#purchaseModal" style="background: grey;" data-field="user" data-disabled="false" data-row="@i" data-col="@j"></div>
                             }
                             else
                             {
-                                <div data-toggle="modal" data-target="#purchaseModal" data-disabled="false" data-row="@i" data-col="@j"></div>
+                                <div data-toggle="modal" data-target="#purchaseModal" data-disabled="false"  data-field="user" data-row="@i" data-col="@j"></div>
                             }
                            
                         }
@@ -118,14 +130,8 @@
                         }
                         else
                         {
-                            if (Model.ComputerField[i - 1][j - 1] == 1)
-                            {
-                                <div data-toggle="modal" data-target="#purchaseModal" style="background: grey;" data-disabled="false" data-row="@i" data-col="@j"></div>
-                            }
-                            else
-                            {
-                                <div data-toggle="modal" data-target="#purchaseModal" data-disabled="false" data-row="@i" data-col="@j"></div>
-                            }
+
+                            <button data-toggle="modal" data-target="#purchaseModal" class="cell" onclick="handleClick(event)"  data-field="computer" data-row="@i" data-col="@j"></button>
                         }
                     }
                 }
@@ -133,3 +139,7 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script type="text/javascript" src="~/js/shot.js"></script>
+}

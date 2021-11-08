@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CourseProject.Data.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20211107122113_InitialCreate")]
+    [Migration("20211108202102_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,15 +24,18 @@ namespace CourseProject.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("UserId")
+                    b.Property<int>("ComputerHits")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("UserId1")
+                    b.Property<int>("UserHits")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("UserId")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId1");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Games");
                 });
@@ -295,7 +298,7 @@ namespace CourseProject.Data.Migrations
                 {
                     b.HasOne("CourseProject.Data.Models.User", "User")
                         .WithMany("Games")
-                        .HasForeignKey("UserId1");
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });

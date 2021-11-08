@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace CourseProject.Data.Models
 {
+    [Index(nameof(GameId))]
     public class MarkedCell
     {
         public int Id { get; set; }

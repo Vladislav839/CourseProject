@@ -243,5 +243,76 @@ namespace CourseProject.BusinessLogic.Services
 
             return true;
         }
+
+        public async Task<CellType> MakeUsersShot(int col, int row, int gameId, CellOwner owner)
+        {
+            MarkedCell cell = await _context.MarkedCells
+                .FirstOrDefaultAsync(c => c.GameId == gameId && c.Col == col && c.Row == row && c.CellOwner == owner);
+
+            if(cell != null)
+            {
+                if(cell.CellType == CellType.EMPTY)
+                {
+                    cell.CellType = CellType.MISS;
+                }
+                else if(cell.CellType == CellType.SHIP)
+                {
+                    cell.CellType = CellType.HIT;
+                    Game game = await _context.Games.FindAsync(gameId);
+                    ++game.UserHits;
+                }
+            }
+
+            await _context.SaveChangesAsync();
+
+            return cell.CellType;
+        }
+
+        public async Task<(int, int, CellType)> MakeComputerShot(int gameId)
+        {
+            Random random = new Random();
+            int col = random.Next(0, 10);
+            int row = random.Next(0, 10);
+
+            MarkedCell cell = await _context.MarkedCells
+                .FirstOrDefaultAsync(c => c.GameId == gameId && c.Col == col && c.Row == row && c.CellOwner == CellOwner.USER);
+
+            if(cell.CellType == CellType.HIT || cell.CellType == CellType.MISS)
+            {
+                return await MakeComputerShot(gameId);
+            }
+
+            if (cell.CellType == CellType.EMPTY)
+            {
+                cell.CellType = CellType.MISS;
+            }
+            else if (cell.CellType == CellType.SHIP)
+            {
+                cell.CellType = CellType.HIT;
+                Game game = await _context.Games.FindAsync(gameId);
+                ++game.ComputerHits;
+            }
+
+            await _context.SaveChangesAsync();
+
+            return (cell.Col, cell.Row, cell.CellType);
+        }
+
+        public async Task<(bool, string)> CheckWinner(int gameId)
+        {
+            Game game = await _context.Games.FindAsync(gameId);
+            if(game.UserHits == 20)
+            {
+                return (true, "User");
+            } 
+            else if(game.ComputerHits == 20)
+            {
+                return (true, "Computer");
+            }
+            else
+            {
+                return (false, null);
+            }
+        }
     }
 }

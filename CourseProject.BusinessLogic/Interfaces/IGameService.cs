@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CourseProject.Data.Models;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,5 +14,10 @@ namespace CourseProject.BusinessLogic.Interfaces
 
         public Task<int[][]> GetComputerField(int gameId);
         public Task<int[][]> GetUserField(int gameId);
+
+        public Task<CellType> MakeUsersShot(int col, int row, int gameId, CellOwner owner);
+        public Task<(int, int, CellType)> MakeComputerShot(int gameId);
+
+        public Task<(bool, string)> CheckWinner(int gameId);
     }
 }
