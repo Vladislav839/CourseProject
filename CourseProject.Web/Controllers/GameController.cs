@@ -16,15 +16,54 @@ namespace CourseProject.Web.Controllers
     public class GameController : Controller
     {
         private readonly IGameService _gameService;
+        private readonly IUsersService _userService;
 
-        public GameController(IGameService gameService)
+        public GameController(IGameService gameService, IUsersService userService)
         {
             _gameService = gameService;
+            _userService = userService;
         }
         public IActionResult Index()
         {
             ViewBag.Characters = new List<char> { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J' };
+            ViewBag.Avatar = _userService.GetUserByUserName(User.Identity.Name).AvatarUrl;
             return View();
+        }
+
+        public async Task<IActionResult> ResumeGame()
+        {
+            User user = _userService.GetUserByUserName(User.Identity.Name);
+            ViewBag.Avatar = _userService.GetUserByUserName(User.Identity.Name).AvatarUrl;
+            List<Game> userGames = await _gameService.GetUserGames(user.Id);
+            return View(userGames.Select(g => new ResumeGameViewModel { Id = g.Id, GameDateTime = g.GameDate }));
+        }
+
+        [HttpPost]
+        public async Task<int> DeleteGame(int gameId)
+        {
+            await _gameService.DeleteGame(gameId);
+            return gameId;
+        }
+
+        [HttpPost]
+        public async Task EndGame(int gameId, string winner)
+        {
+            Game game = await _gameService.GetGameById(gameId);
+
+            User user = _userService.GetUserById(game.UserId);
+            user.TotalGames++;
+
+            if(winner == "User")
+            {
+                user.Won++;
+            }
+            else
+            {
+                user.Lose++;
+            }
+
+            await _userService.UpdateUser(user);
+            await _gameService.DeleteGame(gameId);
         }
 
         [HttpPost]
@@ -38,6 +77,7 @@ namespace CourseProject.Web.Controllers
         public async Task<IActionResult> GameSession(int id)
         {
             ViewBag.Characters = new List<char> { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J' };
+            ViewBag.Avatar = _userService.GetUserByUserName(User.Identity.Name).AvatarUrl;
             GameViewModel viewModel = new GameViewModel
             {
                 UserField = await _gameService.GetUserField(id)

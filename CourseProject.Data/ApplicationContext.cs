@@ -10,7 +10,6 @@ namespace CourseProject.Data
     {
         public DbSet<Game> Games { get; set; }
         public DbSet<MarkedCell> MarkedCells { get; set; }
-        public DbSet<Statistics> Statistics { get; set; }
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options)
         {

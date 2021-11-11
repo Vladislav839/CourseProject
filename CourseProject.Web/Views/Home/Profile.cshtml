@@ -137,7 +137,7 @@ h6 {
 <div class="page-content page-container" id="page-content">
     <div class="padding">
         <div class="row container d-flex justify-content-center">
-            <div class="col-xl-8 col-md-12 ml-5">
+            <div class="col-xl-8 col-md-12">
                 <div class="card user-card-full">
                     <div class="row m-l-0 m-r-0">
                         <div class="col-sm-4 bg-c-lite-green user-profile">
@@ -167,19 +167,20 @@ h6 {
                                 <div class="row">
                                     <div class="col-sm-4">
                                         <p class="m-b-10 f-w-600">Games Played</p>
-                                        <h6 class="text-muted f-w-400">@(new Random().Next(1, 100)) </h6>
+                                        <h6 class="text-muted f-w-400">@Model.TotalGames </h6>
                                     </div>
                                     <div class="col-sm-4">
                                         <p class="m-b-10 f-w-600">Won</p>
-                                        <h6 class="text-muted f-w-400">@(new Random().Next(1, 100))</h6>
+                                        <h6 class="text-muted f-w-400">@Model.Won</h6>
                                     </div>
                                     <div class="col-sm-4">
                                         <p class="m-b-10 f-w-600">Lose</p>
-                                        <h6 class="text-muted f-w-400">@(new Random().Next(1, 100))</h6>
+                                        <h6 class="text-muted f-w-400">@Model.Lose</h6>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <a asp-action="Index" asp-controller="Game" class="btn btn-lg btn-primary mt-5">Play New Game</a>
+                                <div class="row d-flex flex-xl-row">
+                                    <a asp-action="Index" asp-controller="Game" class="btn btn-lg btn-success mt-5">Play New Game</a>
+                                    <a asp-action="ResumeGame" asp-controller="Game" class="btn btn-lg btn-primary mt-5 ml-2">Resume Game</a>
                                 </div>
                             </div>
                         </div>
@@ -211,7 +212,7 @@ h6 {
             processData: false,
             contentType: false,
             success: function (result) {
-
+                document.location.reload()
             },
             error: function (err) {
 

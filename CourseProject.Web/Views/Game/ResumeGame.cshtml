@@ -1,0 +1,46 @@
+﻿@model IEnumerable<CourseProject.Web.ViewModels.ResumeGameViewModel>;
+
+<div class="row">
+    <div class="col-md-5 offset-3">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Game date and time</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr id="@item.Id">
+                        <td>@item.Id</td>
+                        <td>@item.GameDateTime</td>
+                        <td class="d-flex flex-row">
+                            <a asp-action="GameSession" asp-controller="Game" asp-route-id="@item.Id" style="text-decoration: none;" class="btn-sm btn-primary">Resume game</a>
+                            <button class="btn-sm btn-danger ml-2" onclick="deleteGame(event, @item.Id)">Finish game</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        function deleteGame(e, id) {
+            $.ajax({
+                url: '/Game/DeleteGame/',
+                data: { gameId: id },
+                type: "POST",
+                traditional: true,
+                contentType: 'application/x-www-form-urlencoded',
+                success: function (result) {
+                    document.getElementById(result.toString()).remove();
+                },
+                error: function (data, textStatus) { }
+            })
+        }
+    </script>
+}

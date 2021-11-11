@@ -9,6 +9,8 @@ namespace CourseProject.Data.Models
     {
         public string AvatarUrl { get; set; }
         public List<Game> Games { get; set; } = new List<Game>();
-        public Statistics Statistics { get; set; }
+        public int TotalGames { get; set; }
+        public int Won { get; set; }
+        public int Lose { get; set; }
     }
 }

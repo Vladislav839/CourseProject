@@ -33,7 +33,7 @@ namespace CourseProject.BusinessLogic.Services
             this.UserField = field;
             GenerateComputerField();
 
-            Game game = new Game { UserId = _userService.GetUserByUserName(userName).Id };
+            Game game = new Game { UserId = _userService.GetUserByUserName(userName).Id, GameDate = DateTime.Now };
             _context.Games.Add(game);
 
 
@@ -313,6 +313,25 @@ namespace CourseProject.BusinessLogic.Services
             {
                 return (false, null);
             }
+        }
+
+        public async Task DeleteGame(int id)
+        {
+            Game game = await _context.Games.FindAsync(id);
+            _context.Games.Remove(game);
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<Game>> GetUserGames(string userId)
+        {
+            List<Game> games= await _context.Games.Where(g => g.UserId == userId).ToListAsync();
+            return games;
+        }
+
+        public async Task<Game> GetGameById(int gameId)
+        {
+            return await _context.Games.FindAsync(gameId);
         }
     }
 }

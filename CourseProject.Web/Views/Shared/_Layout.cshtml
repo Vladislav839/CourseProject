@@ -12,7 +12,7 @@
     <header style="background-color: #3f4257;">
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-dark border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand  text-white" asp-area="" asp-controller="Home" asp-action="Index">CourseProject</a>
+                <a class="navbar-brand  text-white" asp-area="" asp-controller="Home" asp-action="Profile">CourseProject</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -24,7 +24,7 @@
                             <li class="nav-item" style="margin-top: 5px; margin-left: 7px;">
                                 <div>
                                     <span>
-                                        <img class="rounded-circle" src="@(ViewBag.Avatar != null ? ViewBag.Avatar : "img/avatar_default.png")" style="width:30px; height: 30px;" />
+                                        <img class="rounded-circle" src="@(ViewBag.Avatar != null ? ViewBag.Avatar : "/img/avatar_default.png")" style="width:30px; height: 30px;" />
                                         <span class="text-white">@User.Identity.Name</span>
                                         <span>
                                             <div class="btn-group">

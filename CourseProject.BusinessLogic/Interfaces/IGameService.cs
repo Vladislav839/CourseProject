@@ -19,5 +19,10 @@ namespace CourseProject.BusinessLogic.Interfaces
         public Task<(int, int, CellType)> MakeComputerShot(int gameId);
 
         public Task<(bool, string)> CheckWinner(int gameId);
+
+        public Task<Game> GetGameById(int gameId);
+
+        public Task DeleteGame(int id);
+        public Task<List<Game>> GetUserGames(string userId);
     }
 }

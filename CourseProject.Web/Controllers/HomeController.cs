@@ -26,11 +26,6 @@ namespace CourseProject.Web.Controllers
             _usersService = usersService;
             _appEnvironment = appEnvironment;
         }
-        public IActionResult Index()
-        {
-            ViewBag.Name = User.Identity.Name;
-            return View();
-        }
 
         [HttpGet]
         public async Task<IActionResult> Profile()
@@ -41,7 +36,10 @@ namespace CourseProject.Web.Controllers
                 Id = user.Id,
                 UserName = user.UserName,
                 AvatarUrl = user.AvatarUrl != null ? user.AvatarUrl : "/img/avatar_default.png",
-                Email = user.Email
+                Email = user.Email,
+                TotalGames = user.TotalGames,
+                Lose = user.Lose,
+                Won = user.Won
             };
             ViewBag.Avatar = userViewModel.AvatarUrl;
             return View(userViewModel);

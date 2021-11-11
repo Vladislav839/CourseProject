@@ -38,7 +38,7 @@ namespace CourseProject.Web.Controllers
                 if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, false);
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Profile", "Home");
                 }
                 else
                 {
@@ -66,7 +66,7 @@ namespace CourseProject.Web.Controllers
                 var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, false, false);
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Profile", "Home");
                 }
                 else
                 {
@@ -80,7 +80,7 @@ namespace CourseProject.Web.Controllers
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Profile", "Home");
         }
     }
 }

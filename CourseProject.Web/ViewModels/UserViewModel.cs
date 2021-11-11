@@ -11,5 +11,8 @@ namespace CourseProject.Web.ViewModels
         public string UserName { get; set; }
         public string Email { get; set; }
         public string AvatarUrl { get; set; }
+        public int TotalGames { get; set; }
+        public int Lose { get; set; }
+        public int Won { get; set; }
     }
 }

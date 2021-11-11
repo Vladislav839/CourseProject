@@ -230,7 +230,7 @@ document.getElementById('start_game').addEventListener('click', function (e) {
     }
 
     $.ajax({
-        url: '/Game/InititalizeGame',
+        url: '/Game/InititalizeGame/',
         data: JSON.stringify(field),
         type: "POST",
         traditional: true,
@@ -241,7 +241,7 @@ document.getElementById('start_game').addEventListener('click', function (e) {
         },
         error: function (data, textStatus) { }
     }).done(function (id) {
-        window.location.href = "Game/GameSession/" + id;
+        window.location.href = "/Game/GameSession/" + id;
         });
 
 })

@@ -27,6 +27,9 @@ namespace CourseProject.Data.Migrations
                 {
                     Id = table.Column<string>(type: "TEXT", nullable: false),
                     AvatarUrl = table.Column<string>(type: "TEXT", nullable: true),
+                    TotalGames = table.Column<int>(type: "INTEGER", nullable: false),
+                    Won = table.Column<int>(type: "INTEGER", nullable: false),
+                    Lose = table.Column<int>(type: "INTEGER", nullable: false),
                     UserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
@@ -160,6 +163,7 @@ namespace CourseProject.Data.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     UserId = table.Column<string>(type: "TEXT", nullable: true),
+                    GameDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     ComputerHits = table.Column<int>(type: "INTEGER", nullable: false),
                     UserHits = table.Column<int>(type: "INTEGER", nullable: false)
                 },
@@ -168,29 +172,6 @@ namespace CourseProject.Data.Migrations
                     table.PrimaryKey("PK_Games", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Games_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Statistics",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    UserId = table.Column<string>(type: "TEXT", nullable: true),
-                    User = table.Column<int>(type: "INTEGER", nullable: false),
-                    TotalGames = table.Column<int>(type: "INTEGER", nullable: false),
-                    Won = table.Column<int>(type: "INTEGER", nullable: false),
-                    Lose = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Statistics", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Statistics_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -266,12 +247,6 @@ namespace CourseProject.Data.Migrations
                 name: "IX_MarkedCells_GameId",
                 table: "MarkedCells",
                 column: "GameId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Statistics_UserId",
-                table: "Statistics",
-                column: "UserId",
-                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -293,9 +268,6 @@ namespace CourseProject.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "MarkedCells");
-
-            migrationBuilder.DropTable(
-                name: "Statistics");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

@@ -36,6 +36,8 @@ function getNodeByColAndRow(point) {
 }
 
 function drawCell(data, target) {
+    let id = Number(window.location.href.split('/').pop())
+
     if (data.winner) {
         Swal.fire({
             icon: 'success',
@@ -44,7 +46,17 @@ function drawCell(data, target) {
             confirmButtonText: 'Ok'
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = '/Home/Profile'
+                $.ajax({
+                    url: '/Game/EndGame/',
+                    data: { gameId: id, winner: data.winner},
+                    type: "POST",
+                    traditional: true,
+                    contentType: 'application/x-www-form-urlencoded',
+                    success: function (result) {
+                        document.location.href = '/Home/Profile'
+                    },
+                    error: function (data, textStatus) { }
+                })
             }
         })  
     }

@@ -25,6 +25,9 @@ namespace CourseProject.Data.Migrations
                     b.Property<int>("ComputerHits")
                         .HasColumnType("INTEGER");
 
+                    b.Property<DateTime>("GameDate")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("UserHits")
                         .HasColumnType("INTEGER");
 
@@ -68,35 +71,6 @@ namespace CourseProject.Data.Migrations
                     b.ToTable("MarkedCells");
                 });
 
-            modelBuilder.Entity("CourseProject.Data.Models.Statistics", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Lose")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("TotalGames")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("User")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("Won")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("Statistics");
-                });
-
             modelBuilder.Entity("CourseProject.Data.Models.User", b =>
                 {
                     b.Property<string>("Id")
@@ -125,6 +99,9 @@ namespace CourseProject.Data.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("Lose")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
                         .HasColumnType("TEXT");
@@ -145,12 +122,18 @@ namespace CourseProject.Data.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("TotalGames")
+                        .HasColumnType("INTEGER");
+
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("Won")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -312,13 +295,6 @@ namespace CourseProject.Data.Migrations
                     b.Navigation("Game");
                 });
 
-            modelBuilder.Entity("CourseProject.Data.Models.Statistics", b =>
-                {
-                    b.HasOne("CourseProject.Data.Models.User", null)
-                        .WithOne("Statistics")
-                        .HasForeignKey("CourseProject.Data.Models.Statistics", "UserId");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -373,8 +349,6 @@ namespace CourseProject.Data.Migrations
             modelBuilder.Entity("CourseProject.Data.Models.User", b =>
                 {
                     b.Navigation("Games");
-
-                    b.Navigation("Statistics");
                 });
 #pragma warning restore 612, 618
         }
