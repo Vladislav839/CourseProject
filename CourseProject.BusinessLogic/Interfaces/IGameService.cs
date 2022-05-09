@@ -10,7 +10,7 @@ namespace CourseProject.BusinessLogic.Interfaces
     {
         public int[][] ComputerField { get; }
         public int[][] UserField { get; }
-        public Task<int> CreateGame(int[][] field, string userName);
+        public Task<int> CreateGame(int[][] field, string mode, string userName);
 
         public Task<int[][]> GetComputerField(int gameId);
         public Task<int[][]> GetUserField(int gameId);

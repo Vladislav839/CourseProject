@@ -1,4 +1,5 @@
 ﻿using CourseProject.BusinessLogic.Interfaces;
+using CourseProject.BusinessLogic.Services;
 using CourseProject.Data.Models;
 using CourseProject.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -15,18 +16,22 @@ namespace CourseProject.Web.Controllers
     [Authorize]
     public class GameController : Controller
     {
-        private readonly IGameService _gameService;
         private readonly IUsersService _userService;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly IGameService _gameService;
 
-        public GameController(IGameService gameService, IUsersService userService)
+        public GameController(IServiceProvider serviceProvider, 
+            IUsersService userService, IGameService gameService)
         {
-            _gameService = gameService;
+            _serviceProvider = serviceProvider;
             _userService = userService;
+            _gameService = gameService;
         }
-        public IActionResult Index()
+        public IActionResult Index(string mode)
         {
             ViewBag.Characters = new List<char> { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J' };
             ViewBag.Avatar = _userService.GetUserByUserName(User.Identity.Name).AvatarUrl;
+            ViewBag.Mode = mode;
             return View();
         }
 
@@ -53,7 +58,7 @@ namespace CourseProject.Web.Controllers
             User user = _userService.GetUserById(game.UserId);
             user.TotalGames++;
 
-            if(winner == "User")
+            if (winner == "User")
             {
                 user.Won++;
             }
@@ -67,9 +72,10 @@ namespace CourseProject.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<int> InititalizeGame([FromBody] int[][] field)
+        public async Task<int> InititalizeGame([FromBody] PostData postData)
         {
-            int id = await _gameService.CreateGame(field, User.Identity.Name);
+            var gameService = ResolveGameServiceDependency(postData.mode);
+            int id = await gameService.CreateGame(postData.field, postData.mode, User.Identity.Name);
             return id;
         }
 
@@ -89,22 +95,44 @@ namespace CourseProject.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> MakeShot([FromBody] UserShotViewModel shot)
         {
-            CellType cellType = await _gameService.MakeUsersShot(shot.Col, shot.Row, shot.GameId, CellOwner.COMPUTER);
-            var gameResult = await _gameService.CheckWinner(shot.GameId);
+            var game = await _gameService.GetGameById(shot.GameId);
+            var gameService = ResolveGameServiceDependency(game.ComputerMode);
+            CellType cellType = await gameService.MakeUsersShot(shot.Col, shot.Row, shot.GameId, CellOwner.COMPUTER);
+            var gameResult = await gameService.CheckWinner(shot.GameId);
             if(gameResult.Item1 == true)
             {
                 return Json(new ResponseShotViewModel { Winner = gameResult.Item2 });
             }
-            var computerShot = await _gameService.MakeComputerShot(shot.GameId);
+            var computerShot = await gameService.MakeComputerShot(shot.GameId);
+            gameResult = await gameService.CheckWinner(shot.GameId);
             ResponseShotViewModel shotViewModel = new ResponseShotViewModel
             {
                 Col = computerShot.Item1,
                 Row = computerShot.Item2,
                 GameId = shot.GameId,
                 UserShotCellType = cellType.ToString(),
-                ComputerShotCellType =  computerShot.Item3.ToString()
+                ComputerShotCellType =  computerShot.Item3.ToString(),
+                Winner = gameResult.Item2
             };
             return Json(shotViewModel);
+        }
+
+        private IGameService ResolveGameServiceDependency(string gameMode)
+        {
+            if (gameMode == "easy")
+            {
+                return (IGameService)_serviceProvider.GetService(typeof(GameService));
+            }
+            else
+            {
+                return (IGameService)_serviceProvider.GetService(typeof(StrategyGameService));
+            }
+        }
+
+        public class PostData
+        {
+            public int[][] field { get; set; }
+            public string mode { get; set;  }
         }
     }
 }

@@ -179,8 +179,9 @@ h6 {
                                     </div>
                                 </div>
                                 <div class="row d-flex flex-xl-row">
-                                    <a asp-action="Index" asp-controller="Game" class="btn btn-lg btn-success mt-5">Play New Game</a>
-                                    <a asp-action="ResumeGame" asp-controller="Game" class="btn btn-lg btn-primary mt-5 ml-2">Resume Game</a>
+                                    <a asp-action="Index" asp-controller="Game" asp-route-mode="easy" class="btn btn-success mt-5">Play New Game with easy computer</a>
+                                    <a asp-action="Index" asp-controller="Game" asp-route-mode="hard" class="btn btn-success mt-2">Play New Game with hard computer</a>
+                                    <a asp-action="ResumeGame" asp-controller="Game" class="btn btn-primary mt-2 ml-2">Resume Game</a>
                                 </div>
                             </div>
                         </div>

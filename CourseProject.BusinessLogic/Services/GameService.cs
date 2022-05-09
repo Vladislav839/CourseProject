@@ -1,6 +1,9 @@
-﻿using CourseProject.BusinessLogic.Interfaces;
+﻿using CourseProject.BusinessLogic.Infrastructure;
+using CourseProject.BusinessLogic.Interfaces;
 using CourseProject.Data;
 using CourseProject.Data.Models;
+
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -12,15 +15,20 @@ namespace CourseProject.BusinessLogic.Services
 {
     public class GameService : IGameService
     {
-        private readonly ApplicationContext _context;
-        private readonly IUsersService _userService;
-        public int[][] ComputerField { get; private set; } = new int[10][];
+        protected readonly ApplicationContext _context;
+        protected readonly IUsersService _userService;
+        protected readonly IWebHostEnvironment _appEnvironment;
+        protected readonly IRandomService _randomService;
+        public int[][] ComputerField { get; protected set; } = new int[10][];
         public int[][] UserField { get; private set; }
 
-        public GameService(ApplicationContext context, IUsersService service)
+        public GameService(ApplicationContext context, IUsersService service, 
+            IWebHostEnvironment appEnvironment, IRandomService randomService)
         {
             _context = context;
             _userService = service;
+            _appEnvironment = appEnvironment;
+            _randomService = randomService;
 
             for (int i = 0; i < 10; i++)
             {
@@ -28,12 +36,14 @@ namespace CourseProject.BusinessLogic.Services
             }
         }
 
-        public async Task<int> CreateGame(int[][] field, string userName)
+        public async Task<int> CreateGame(int[][] field, string mode, string userName)
         {
             this.UserField = field;
             GenerateComputerField();
 
-            Game game = new Game { UserId = _userService.GetUserByUserName(userName).Id, GameDate = DateTime.Now };
+            Game game = new Game { UserId = _userService.GetUserByUserName(userName).Id, 
+                GameDate = DateTime.Now, ComputerMode = mode };
+
             _context.Games.Add(game);
 
 
@@ -153,7 +163,7 @@ namespace CourseProject.BusinessLogic.Services
             return field;
         }
 
-        private void GenerateComputerField()
+        protected virtual void GenerateComputerField()
         {
 
             PlaceShip(4);
@@ -171,20 +181,19 @@ namespace CourseProject.BusinessLogic.Services
 
         private (int, int, int) GetCoordinates(int size)
         {
-            Random random = new Random();
-            int dir = random.Next(0, 2);
+            int dir = _randomService.Next(2);
             int x;
             int y;
 
             if (dir == 0)
             {
-                x = random.Next(0, 10);
-                y = random.Next(0, 10 - size);
+                x = _randomService.Next(10);
+                y = _randomService.Next(10 - size);
             }
             else
             {
-                x = random.Next(0, 10 - size);
-                y = random.Next(0, 10);
+                x = _randomService.Next(10 - size);
+                y = _randomService.Next(10);
             }
 
             bool res = CheckRules(x, y, dir, size);
@@ -194,7 +203,7 @@ namespace CourseProject.BusinessLogic.Services
             return (x, y, dir);
         }
 
-        private void PlaceShip(int size)
+        protected void PlaceShip(int size)
         {
             var coordinates = GetCoordinates(size);
             if(coordinates.Item3 == 0)
@@ -213,7 +222,7 @@ namespace CourseProject.BusinessLogic.Services
             }
         }
 
-        private bool CheckRules(int startRow, int startCol, int dir, int size)
+        protected bool CheckRules(int startRow, int startCol, int dir, int size)
         {
 
             int fromX = 0, toX = -1, fromY = 0, toY = -1;
@@ -268,11 +277,10 @@ namespace CourseProject.BusinessLogic.Services
             return cell.CellType;
         }
 
-        public async Task<(int, int, CellType)> MakeComputerShot(int gameId)
+        public virtual async Task<(int, int, CellType)> MakeComputerShot(int gameId)
         {
-            Random random = new Random();
-            int col = random.Next(0, 10);
-            int row = random.Next(0, 10);
+            int col = _randomService.Next(10);
+            int row = _randomService.Next(10);
 
             MarkedCell cell = await _context.MarkedCells
                 .FirstOrDefaultAsync(c => c.GameId == gameId && c.Col == col && c.Row == row && c.CellOwner == CellOwner.USER);

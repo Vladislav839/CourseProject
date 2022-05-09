@@ -1,7 +1,9 @@
+using CourseProject.BusinessLogic.Infrastructure;
 using CourseProject.BusinessLogic.Interfaces;
 using CourseProject.BusinessLogic.Services;
 using CourseProject.Data;
 using CourseProject.Data.Models;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -41,6 +43,9 @@ namespace CourseProject.Web
 
             services.AddTransient<IUsersService, UsersService>();
             services.AddScoped<IGameService, GameService>();
+            services.AddScoped<GameService>();
+            services.AddScoped<StrategyGameService>();
+            services.AddSingleton<IRandomService, RegularRandomService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -216,6 +216,15 @@ document.getElementById('palce_button').addEventListener('click', function(e) {
 
 document.getElementById('start_game').addEventListener('click', function (e) {
 
+    if (!ships.every(x => x.isPalced === true)) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Не все корабли расставлены',
+        })
+        return
+    }
+
     let nodes = document.querySelector('.wrapper').children;
     for (let i = 0; i < nodes.length; i++) {
         if (nodes[i].getAttribute('data-col') == "0" || nodes[i].getAttribute('data-row') == "0") {
@@ -229,9 +238,16 @@ document.getElementById('start_game').addEventListener('click', function (e) {
         }
     }
 
+    let mode = e.target.getAttribute("data-mode");
+
+    const postData = {
+        field: field,
+        mode: mode
+    }
+
     $.ajax({
         url: '/Game/InititalizeGame/',
-        data: JSON.stringify(field),
+        data: JSON.stringify(postData),
         type: "POST",
         traditional: true,
         contentType: "application/json; charset=utf-8",

@@ -12,6 +12,7 @@ namespace CourseProject.Data.Models
         public User User { get; set; }
         public int ComputerHits { get; set; }
         public int UserHits { get; set; }
+        public string ComputerMode { get; set; }
 
         List<MarkedCell> cells = new List<MarkedCell>();
     }
